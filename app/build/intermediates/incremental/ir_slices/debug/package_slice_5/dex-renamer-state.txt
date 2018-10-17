@@ -1,0 +1,4 @@
+#Wed Oct 17 14:19:16 CDT 2018
+base.0=C\:\\Users\\rc211\\Documents\\GitHub\\spellingGame2\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\5
+path.0=classes.dex
+renamed.0=classes.dex
