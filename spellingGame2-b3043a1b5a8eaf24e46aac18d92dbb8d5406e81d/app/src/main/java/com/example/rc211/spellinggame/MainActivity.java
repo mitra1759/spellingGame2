@@ -18,9 +18,13 @@ public class MainActivity extends Activity implements
     /** Called when the activity is first created. */
     private TextToSpeech tts;
     TextView wordText;
+    TextView scoreText;
     EditText wordInput;
     Button enterButton;
+    Button speakButton;
     Button hintButton;
+    int hintIndex=0;
+    int points=0;
     String[] array = {"ability",
             "able",
             "about",
@@ -1024,7 +1028,9 @@ public class MainActivity extends Activity implements
         tts = new TextToSpeech(this, this);
         wordInput = findViewById(R.id.wordInput);
         wordText = findViewById(R.id.wordText);
+        scoreText = findViewById(R.id.scoreText);
         enterButton = findViewById(R.id.enterButton);
+        speakButton = findViewById(R.id.speakButton);
         hintButton = findViewById(R.id.hintButton);
         // button on click event
 
@@ -1036,9 +1042,22 @@ public class MainActivity extends Activity implements
 
             @Override
             public void onClick(View arg0) {
-                speakOut();
-                Toast.makeText(MainActivity.this,
-                        array[index], Toast.LENGTH_LONG).show();
+                if(wordInput.getText().toString().equals(array[index])){
+//                                    Toast.makeText(MainActivity.this,
+//                        points+"", Toast.LENGTH_LONG).show();
+                    wordInput.setText("",TextView.BufferType.EDITABLE);
+                    points+=array[index].length()-hintIndex;
+                    index=(int)(Math.random()*array.length);
+                    hintIndex=0;
+                    wordBlanks="";
+                    for(int i=0;i<array[index].length();i++){
+                        wordBlanks+="_ ";
+                    }
+                    wordText.setText(wordBlanks);
+                }
+                scoreText.setText(points+"");
+//                Toast.makeText(MainActivity.this,
+//                        array[index], Toast.LENGTH_LONG).show();
             }
 
         });
@@ -1046,18 +1065,24 @@ public class MainActivity extends Activity implements
 
             @Override
             public void onClick(View arg0) {
-               int temp= wordBlanks.indexOf("_");
-//               if(temp>0)
-                if(temp<array[index].length()-1)
-               wordBlanks=(array[index].substring(0,temp+1));
                 String temp1="";
-                for (int i=0;i<array[index].length()-temp;i++){
+                if ((hintIndex<array[index].length()-1))
+                {
+                    hintIndex++;
+                }
+                for (int i=0;i<array[index].length()-hintIndex;i++){
                     temp1+="_ ";
                 }
-                wordBlanks=wordBlanks+temp1;
+                wordBlanks=array[index].substring(0,hintIndex)+temp1;
                wordText.setText(wordBlanks);
-                Toast.makeText(MainActivity.this,
-                        temp+"", Toast.LENGTH_LONG).show();
+            }
+
+        });
+        speakButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                speakOut();
             }
 
         });
@@ -1085,7 +1110,7 @@ public class MainActivity extends Activity implements
                 Log.e("TTS", "This Language is not supported");
             } else {
                 enterButton.setEnabled(true);
-                speakOut();
+//                speakOut();
             }
 
         } else {
@@ -1096,8 +1121,8 @@ public class MainActivity extends Activity implements
 
     private void speakOut() {
 
-        CharSequence text = wordInput.getText();
-//        text= array[index];
+//        CharSequence text = wordInput.getText();
+        CharSequence text=array[index];
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null,"id1");
     }
 }
