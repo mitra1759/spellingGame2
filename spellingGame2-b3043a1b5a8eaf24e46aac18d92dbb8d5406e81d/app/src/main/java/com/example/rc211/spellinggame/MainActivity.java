@@ -1,9 +1,11 @@
 package com.example.rc211.spellinggame;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
@@ -15,17 +17,25 @@ import android.widget.Toast;
 public class MainActivity extends Activity implements
         TextToSpeech.OnInitListener {
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     private TextToSpeech tts;
     TextView wordText;
     TextView scoreText;
+    TextView timeText;
+    TextView lifeText;
     EditText wordInput;
     Button enterButton;
     Button speakButton;
     Button hintButton;
-    int hintIndex=0;
-    int points=0;
-    String[] array = {"ability",
+    Button skipButton;
+    int hintIndex = 0;
+    int points = 0;
+    int time = 60;
+    int lives =3;
+    ArrayList words = new ArrayList();
+    String[] array = new String[]{"ability",
             "able",
             "about",
             "above",
@@ -1019,8 +1029,9 @@ public class MainActivity extends Activity implements
             "young",
             "your",
             "yourself"};
-    int index=(int)(Math.random()*array.length);
-    String wordBlanks ="";
+    int index = (int) (Math.random() * array.length);
+    String wordBlanks = "";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1029,33 +1040,39 @@ public class MainActivity extends Activity implements
         wordInput = findViewById(R.id.wordInput);
         wordText = findViewById(R.id.wordText);
         scoreText = findViewById(R.id.scoreText);
+        timeText = findViewById(R.id.timeText);
+        lifeText = findViewById(R.id.lifeText);
         enterButton = findViewById(R.id.enterButton);
         speakButton = findViewById(R.id.speakButton);
+        skipButton = findViewById(R.id.skipButton);
         hintButton = findViewById(R.id.hintButton);
         // button on click event
-
-        for(int i=0;i<array[index].length();i++){
-            wordBlanks+="_ ";
+        startTimer();
+        words.add(array[index]);
+        for (int i = 0; i < array[index].length(); i++) {
+            wordBlanks += "_ ";
         }
         wordText.setText(wordBlanks);
         enterButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
-                if(wordInput.getText().toString().equals(array[index])){
-//                                    Toast.makeText(MainActivity.this,
-//                        points+"", Toast.LENGTH_LONG).show();
-                    wordInput.setText("",TextView.BufferType.EDITABLE);
-                    points+=array[index].length()-hintIndex;
-                    index=(int)(Math.random()*array.length);
-                    hintIndex=0;
-                    wordBlanks="";
-                    for(int i=0;i<array[index].length();i++){
-                        wordBlanks+="_ ";
+                if (wordInput.getText().toString().equals(array[index])) {
+                    wordInput.setText("", TextView.BufferType.EDITABLE);
+                    points += array[index].length() - hintIndex;
+                    index = (int) (Math.random() * array.length);
+                    hintIndex = 0;
+                    wordBlanks = "";
+                    for (int i = 0; i < array[index].length(); i++) {
+                        wordBlanks += "_ ";
                     }
                     wordText.setText(wordBlanks);
                 }
-                scoreText.setText(points+"");
+                else{
+                    skipWord();
+
+                }
+                scoreText.setText(points + "");
 //                Toast.makeText(MainActivity.this,
 //                        array[index], Toast.LENGTH_LONG).show();
             }
@@ -1065,19 +1082,28 @@ public class MainActivity extends Activity implements
 
             @Override
             public void onClick(View arg0) {
-                String temp1="";
-                if ((hintIndex<array[index].length()-1))
-                {
+                String temp1 = "";
+                if ((hintIndex < array[index].length() - 1)) {
                     hintIndex++;
                 }
-                for (int i=0;i<array[index].length()-hintIndex;i++){
-                    temp1+="_ ";
+                for (int i = 0; i < array[index].length() - hintIndex; i++) {
+                    temp1 += "_ ";
                 }
-                wordBlanks=array[index].substring(0,hintIndex)+temp1;
-               wordText.setText(wordBlanks);
+                wordBlanks = array[index].substring(0, hintIndex) + temp1;
+                wordText.setText(wordBlanks);
             }
 
         });
+        skipButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                skipWord();
+
+            }
+
+        });
+
         speakButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -1122,8 +1148,58 @@ public class MainActivity extends Activity implements
     private void speakOut() {
 
 //        CharSequence text = wordInput.getText();
-        CharSequence text=array[index];
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null,"id1");
+        CharSequence text = array[index];
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "id1");
+    }
+
+    private void startTimer() {
+        new CountDownTimer(60000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                time--;
+                timeText.setText(time + "");
+            }
+
+            public void onFinish() {
+
+            }
+        }.start();
+    }
+
+    private void endGame() {
+       if(time<=0||lives<=0) {
+
+       }
+    }
+    private void skipWord(){
+        words.add(array[index]);
+        wordInput.setText("", TextView.BufferType.EDITABLE);
+        index = (int) (Math.random() * array.length);
+        hintIndex = 0;
+        wordBlanks = "";
+        for (int i = 0; i < array[index].length(); i++) {
+            wordBlanks += "_ ";
+        }
+        if (points >= 1)
+            points--;
+        wordText.setText(wordBlanks);
+        scoreText.setText(points + "");
+        lives--;
+        lifeText.setText("Lives: "+lives);
+        endGame();
+    }
+    private void newGame(){
+        words.clear();
+        index = (int) (Math.random() * array.length);
+        hintIndex = 0;
+        wordBlanks = "";
+        for (int i = 0; i < array[index].length(); i++) {
+            wordBlanks += "_ ";
+        }
+        points=0;
+        lives=3;
+        time=60;
+        startTimer();
     }
 }
 
