@@ -1045,6 +1045,7 @@ public class MainActivity extends Activity implements
                 if(wordInput.getText().toString().equals(array[index])){
 //                                    Toast.makeText(MainActivity.this,
 //                        points+"", Toast.LENGTH_LONG).show();
+                    wordInput.setText("",TextView.BufferType.EDITABLE);
                     points+=array[index].length()-hintIndex;
                     index=(int)(Math.random()*array.length);
                     hintIndex=0;
