@@ -30,9 +30,11 @@ public class MainActivity extends Activity implements
     Button speakButton;
     Button hintButton;
     Button skipButton;
+    Button restartButton;
+    CountDownTimer waitTimer;
     int hintIndex = 0;
     int points = 0;
-    int time = 60;
+    int time = 61;
     int lives =3;
     ArrayList words = new ArrayList();
     String[] array = new String[]{"ability",
@@ -566,8 +568,6 @@ public class MainActivity extends Activity implements
             "move",
             "movement",
             "movie",
-            "Mr",
-            "Mrs",
             "much",
             "music",
             "must",
@@ -599,7 +599,6 @@ public class MainActivity extends Activity implements
             "nothing",
             "notice",
             "now",
-            "n't",
             "number",
             "occur",
             "of",
@@ -668,7 +667,6 @@ public class MainActivity extends Activity implements
             "plant",
             "play",
             "player",
-            "PM",
             "point",
             "police",
             "policy",
@@ -1046,9 +1044,10 @@ public class MainActivity extends Activity implements
         speakButton = findViewById(R.id.speakButton);
         skipButton = findViewById(R.id.skipButton);
         hintButton = findViewById(R.id.hintButton);
+        restartButton= findViewById(R.id.restartButton);
         // button on click event
         startTimer();
-        words.add(array[index]);
+//        words.add(array[index]);
         for (int i = 0; i < array[index].length(); i++) {
             wordBlanks += "_ ";
         }
@@ -1057,7 +1056,7 @@ public class MainActivity extends Activity implements
 
             @Override
             public void onClick(View arg0) {
-                if (wordInput.getText().toString().equals(array[index])) {
+                if (wordInput.getText().toString().compareToIgnoreCase(array[index])==0) {
                     wordInput.setText("", TextView.BufferType.EDITABLE);
                     points += array[index].length() - hintIndex;
                     index = (int) (Math.random() * array.length);
@@ -1072,7 +1071,7 @@ public class MainActivity extends Activity implements
                     skipWord();
 
                 }
-                scoreText.setText(points + "");
+                scoreText.setText("Score: "+points + "");
 //                Toast.makeText(MainActivity.this,
 //                        array[index], Toast.LENGTH_LONG).show();
             }
@@ -1091,6 +1090,14 @@ public class MainActivity extends Activity implements
                 }
                 wordBlanks = array[index].substring(0, hintIndex) + temp1;
                 wordText.setText(wordBlanks);
+            }
+
+        });
+        restartButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                newGame();
             }
 
         });
@@ -1153,21 +1160,43 @@ public class MainActivity extends Activity implements
     }
 
     private void startTimer() {
-        new CountDownTimer(60000, 1000) {
-
+        waitTimer = new CountDownTimer(60000, 1000) {
             public void onTick(long millisUntilFinished) {
                 time--;
                 timeText.setText(time + "");
             }
 
             public void onFinish() {
-
+                endGame();
             }
         }.start();
     }
 
     private void endGame() {
-       if(time<=0||lives<=0) {
+        if (time <= 1 || lives <= 0) {
+            if(time<=1){
+                words.add(array[index]);
+            }
+            String tempList="Words Missed: ";
+            if(waitTimer != null) {
+                waitTimer.cancel();
+                waitTimer = null;
+            }
+            timeText.setVisibility(View.INVISIBLE);
+//            scoreText.setVisibility(View.INVISIBLE);
+            enterButton.setVisibility(View.INVISIBLE);
+            speakButton.setVisibility(View.INVISIBLE);
+            hintButton.setVisibility(View.INVISIBLE);
+            skipButton.setVisibility(View.INVISIBLE);
+            lifeText.setVisibility(View.INVISIBLE);
+//            wordText.setVisibility(View.INVISIBLE);
+            wordInput.setVisibility(View.INVISIBLE);
+            restartButton.setVisibility(View.VISIBLE);
+            for(int i=0; i<words.size();i++) {
+                tempList+=words.get(i).toString()+", ";
+            }
+            wordText.setText(tempList);
+            scoreText.setText("You Finished with "+points+" points");
 
        }
     }
@@ -1183,7 +1212,7 @@ public class MainActivity extends Activity implements
         if (points >= 1)
             points--;
         wordText.setText(wordBlanks);
-        scoreText.setText(points + "");
+        scoreText.setText("Score: "+points + "");
         lives--;
         lifeText.setText("Lives: "+lives);
         endGame();
@@ -1198,8 +1227,25 @@ public class MainActivity extends Activity implements
         }
         points=0;
         lives=3;
-        time=60;
+        time=61;
+        if(waitTimer != null) {
+            waitTimer.cancel();
+            waitTimer = null;
+        }
         startTimer();
+        timeText.setVisibility(View.VISIBLE);
+        scoreText.setVisibility(View.VISIBLE);
+        enterButton.setVisibility(View.VISIBLE);
+        speakButton.setVisibility(View.VISIBLE);
+        hintButton.setVisibility(View.VISIBLE);
+        skipButton.setVisibility(View.VISIBLE);
+        lifeText.setVisibility(View.VISIBLE);
+        wordText.setVisibility(View.VISIBLE);
+        wordInput.setVisibility(View.VISIBLE);
+        restartButton.setVisibility(View.INVISIBLE);
+        lifeText.setText("Lives: 3");
+        wordText.setText(wordBlanks);
+        scoreText.setText("Score: 0");
     }
 }
 
