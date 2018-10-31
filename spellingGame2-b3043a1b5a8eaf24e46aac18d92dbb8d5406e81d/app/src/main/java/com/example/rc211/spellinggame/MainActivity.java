@@ -1033,7 +1033,7 @@ public class MainActivity extends Activity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);//https://stackoverflow.com/questions/14122690/edit-text-with-round-corner-and-shadow
         tts = new TextToSpeech(this, this);
         wordInput = findViewById(R.id.wordInput);
         wordText = findViewById(R.id.wordText);
