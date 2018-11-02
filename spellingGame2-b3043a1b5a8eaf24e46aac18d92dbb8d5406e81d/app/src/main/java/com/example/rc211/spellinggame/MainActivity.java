@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +27,10 @@ public class MainActivity extends Activity implements
     TextView timeText;
     TextView lifeText;
     EditText wordInput;
-    Button enterButton;
-    Button speakButton;
-    Button hintButton;
-    Button skipButton;
+    ImageButton enterButton;
+    ImageButton speakButton;
+    ImageButton hintButton;
+    ImageButton skipButton;
     Button restartButton;
     CountDownTimer waitTimer;
     int hintIndex = 0;
