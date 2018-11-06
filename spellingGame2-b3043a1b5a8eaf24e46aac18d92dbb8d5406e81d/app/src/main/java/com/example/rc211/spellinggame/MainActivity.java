@@ -12,8 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity implements
         TextToSpeech.OnInitListener {
@@ -26,16 +26,19 @@ public class MainActivity extends Activity implements
     TextView scoreText;
     TextView timeText;
     TextView lifeText;
+    TextView nameView;
     EditText wordInput;
     ImageButton enterButton;
     ImageButton speakButton;
     ImageButton hintButton;
     ImageButton skipButton;
     Button restartButton;
+    ImageView splashView;
+    ImageView logoView;
     CountDownTimer waitTimer;
     int hintIndex = 0;
     int points = 0;
-    int time = 61;
+    int time = 66;
     int lives =3;
     ArrayList words = new ArrayList();
     String[] array = new String[]{"ability",
@@ -1046,12 +1049,25 @@ public class MainActivity extends Activity implements
         skipButton = findViewById(R.id.skipButton);
         hintButton = findViewById(R.id.hintButton);
         restartButton= findViewById(R.id.restartButton);
+        splashView = findViewById(R.id.splashView);
+        nameView = findViewById(R.id.nameView);
+        logoView = findViewById(R.id.logoView);
         // button on click event
         startTimer();
 //        words.add(array[index]);
         for (int i = 0; i < array[index].length(); i++) {
             wordBlanks += "_ ";
         }
+        waitTimer = new CountDownTimer(6000, 1000) {
+            public void onTick(long millisUntilFinished) {
+            }
+
+            public void onFinish() {
+                splashView.setVisibility(View.INVISIBLE);
+                logoView.setVisibility(View.INVISIBLE);
+                nameView.setVisibility(View.INVISIBLE);
+            }
+        }.start();
         wordText.setText(wordBlanks);
         enterButton.setOnClickListener(new View.OnClickListener() {
 
