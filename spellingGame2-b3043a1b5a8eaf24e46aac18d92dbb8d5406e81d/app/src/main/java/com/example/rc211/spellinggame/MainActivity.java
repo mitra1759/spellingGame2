@@ -1059,7 +1059,7 @@ public class MainActivity extends Activity implements
         for (int i = 0; i < array[index].length(); i++) {
             wordBlanks += "_ ";
         }
-        waitTimer = new CountDownTimer(4000, 1000) {
+        new CountDownTimer(4000, 1000) {
             public void onTick(long millisUntilFinished) {
             }
 
@@ -1084,7 +1084,7 @@ public class MainActivity extends Activity implements
                     for (int i = 0; i < array[index].length(); i++) {
                         wordBlanks += "_ ";
                     }
-                    waitTimer = new CountDownTimer(600, 300) {
+                    new CountDownTimer(600, 300) {
                         public void onTick(long millisUntilFinished) {
                             wordInput.setBackgroundResource(R.drawable.correct);
                         }
@@ -1097,7 +1097,7 @@ public class MainActivity extends Activity implements
                 }
                 else{
                     skipWord();
-                    waitTimer = new CountDownTimer(600, 300) {
+                    new CountDownTimer(600, 300) {
                         public void onTick(long millisUntilFinished) {
                             wordInput.setBackgroundResource(R.drawable.incorrect);
                         }
