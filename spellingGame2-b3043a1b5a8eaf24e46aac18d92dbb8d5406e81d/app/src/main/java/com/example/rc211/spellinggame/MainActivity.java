@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.speech.tts.TextToSpeech;
@@ -38,7 +39,7 @@ public class MainActivity extends Activity implements
     CountDownTimer waitTimer;
     int hintIndex = 0;
     int points = 0;
-    int time = 66;
+    int time = 60;
     int lives =3;
     ArrayList words = new ArrayList();
     String[] array = new String[]{"ability",
@@ -1053,12 +1054,12 @@ public class MainActivity extends Activity implements
         nameView = findViewById(R.id.nameView);
         logoView = findViewById(R.id.logoView);
         // button on click event
-        startTimer();
+//        startTimer();
 //        words.add(array[index]);
         for (int i = 0; i < array[index].length(); i++) {
             wordBlanks += "_ ";
         }
-        waitTimer = new CountDownTimer(6000, 1000) {
+        waitTimer = new CountDownTimer(4000, 1000) {
             public void onTick(long millisUntilFinished) {
             }
 
@@ -1066,6 +1067,7 @@ public class MainActivity extends Activity implements
                 splashView.setVisibility(View.INVISIBLE);
                 logoView.setVisibility(View.INVISIBLE);
                 nameView.setVisibility(View.INVISIBLE);
+                startTimer();
             }
         }.start();
         wordText.setText(wordBlanks);
@@ -1082,10 +1084,28 @@ public class MainActivity extends Activity implements
                     for (int i = 0; i < array[index].length(); i++) {
                         wordBlanks += "_ ";
                     }
+                    waitTimer = new CountDownTimer(600, 300) {
+                        public void onTick(long millisUntilFinished) {
+                            wordInput.setBackgroundResource(R.drawable.correct);
+                        }
+
+                        public void onFinish() {
+                            wordInput.setBackgroundResource(R.drawable.style);
+                        }
+                    }.start();
                     wordText.setText(wordBlanks);
                 }
                 else{
                     skipWord();
+                    waitTimer = new CountDownTimer(600, 300) {
+                        public void onTick(long millisUntilFinished) {
+                            wordInput.setBackgroundResource(R.drawable.incorrect);
+                        }
+
+                        public void onFinish() {
+                            wordInput.setBackgroundResource(R.drawable.style);
+                        }
+                    }.start();
 
                 }
                 scoreText.setText("Score: "+points + "");
@@ -1174,6 +1194,7 @@ public class MainActivity extends Activity implements
 //        CharSequence text = wordInput.getText();
         CharSequence text = array[index];
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "id1");
+
     }
 
     private void startTimer() {
